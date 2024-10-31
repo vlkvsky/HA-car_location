@@ -20,9 +20,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class CarGPSSensor(Entity):
 
     def __init__(self, car_gps):
-        self._name = 'car_gps_sensor'
+        self._name = 'Audi A4 GPS Tracker'
         self._icon = 'mdi:car'
         self._car_gps = car_gps
+        self._unique_id = 'c5529293-6ec9-4ec0-bf71-065239fb8452'
 
 
 
@@ -38,6 +39,11 @@ class CarGPSSensor(Entity):
     @property
     def icon(self):
         return self._icon
+    
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self._unique_id
 
     @property
     def extra_state_attributes(self):
