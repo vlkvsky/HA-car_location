@@ -1,0 +1,9 @@
+{
+  "domain": "car_location",
+  "name": "car_location",
+  "version": "1.0",
+  "documentation": "https://github.com/vlkvsky/homeassistant/addons",
+  "dependencies": [],
+  "codeowners": ["@vlkvsky"],
+  "requirements": []
+}
