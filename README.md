@@ -13,11 +13,4 @@ https://livegpstracks.com/dv_USERID.html
 <p>here USERID – is ID of your livegpstracks share, it will be needed to us further </p>
 <p>Place the "car_location" folder to "config_folder_homeassistant/custom_components/". Do not forget about the rights to created folders and files.</p>
 
-<h1>Configuration</h1>
-<p>Add the following lines in the "configuration.yaml" file:</p>
-<pre><code>
-car_location:
-  username: 'your_username'
-  client_id: 'your_share_id'
-</code></pre>
-<p>here "your_username" is the username, you registered with on livegpstracks, "your_share_id" is ID of your livegpstracks share.</p>
+<h1>Made by vlkvsky</h1>
