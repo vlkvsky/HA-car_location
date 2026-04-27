@@ -38,10 +38,14 @@ class CarTracker(TrackerEntity):
     @property
     def extra_state_attributes(self):
         data = self.coordinator.data or {}
-
+        date = data.get("d")
+        time = data.get("t")
+        last_seen = f"{date} {time}" if date and time else None
+        is_online = int(data.get("battery", 0)) == 1
+        speed = float(data.get("speed", 0)) if data.get("speed") else 0.0
+        
         return {
-            "update": f"{data.get('d')} {data.get('t')}",
-            "online": int(data.get("battery", 0)) == 1,
-            "speed": float(data.get("speed", 0)),
-            "diff_time_minutes": round(int(data.get("diff_time", 0)) / 60, 1),
+            "last_seen": last_seen,
+            "is_online": is_online,
+            "speed": speed,
         }
