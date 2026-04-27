@@ -1,4 +1,4 @@
 {
     "name": "car_location",
-    "domains": ["sensor"]
+    "domains": ["device_tracker"]
 }
