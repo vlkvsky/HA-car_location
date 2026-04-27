@@ -13,6 +13,7 @@ class CarTracker(TrackerEntity):
         self.coordinator = coordinator
         self._attr_name = "Audi A4"
         self._attr_unique_id = "audi_a4_tracker"
+        self._attr_icon = "mdi:car"
 
     @property
     def source_type(self):
