@@ -37,4 +37,11 @@ class CarTracker(TrackerEntity):
 
     @property
     def extra_state_attributes(self):
-        return self.coordinator.data or {}
+        data = self.coordinator.data or {}
+
+        return {
+            "update": f"{data.get('d')} {data.get('t')}",
+            "online": int(data.get("battery", 0)) == 1,
+            "speed": float(data.get("speed", 0)),
+            "diff_time_minutes": round(int(data.get("diff_time", 0)) / 60, 1),
+        }
