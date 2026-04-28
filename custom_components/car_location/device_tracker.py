@@ -72,5 +72,5 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
         return {
             "speed": float(data.get("speed", 0)),
             "ignition": bool(engine),
-            "last update": format_diff_time(diff_time),
+            "last_update": format_diff_time(diff_time),
         }
