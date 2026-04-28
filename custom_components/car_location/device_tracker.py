@@ -44,10 +44,9 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
     def extra_state_attributes(self):
         data = self.coordinator.data or {}
 
-        acc = int(data.get("acc", 0))
+        engine = int(data.get("engine", 0))
 
         return {
             "speed": float(data.get("speed", 0)),
-            "acc": acc,
-            "ignition": bool(acc),
+            "ignition": bool(engine),
         }
