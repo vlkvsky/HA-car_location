@@ -64,7 +64,7 @@ class CarDataCoordinator(DataUpdateCoordinator):
             bigdata_raw = d.get("bigdata", "")
             bigdata = _parse_bigdata(bigdata_raw)
 
-            acc = int(bigdata.get("ACC", 0))
+            engine = int(bigdata.get("engine", 0))
 
             # фильтр мусорной скорости при LBS
             speed = float(d.get("speed", 0))
@@ -77,5 +77,5 @@ class CarDataCoordinator(DataUpdateCoordinator):
                 "speed": speed,
                 "timestamp": f'{d["d"]} {d["t"]}',
                 "diff_time": int(d.get("diff_time", 0)),
-                "acc": acc,
+                "engine": engine,
             }
