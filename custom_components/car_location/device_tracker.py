@@ -1,4 +1,5 @@
 from homeassistant.components.device_tracker import SourceType, TrackerEntity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 DOMAIN = "car_location"
 
@@ -8,9 +9,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities([CarTracker(coordinator)])
 
 
-class CarTracker(TrackerEntity):
+class CarTracker(CoordinatorEntity, TrackerEntity):
     def __init__(self, coordinator):
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._attr_name = "Audi A4"
         self._attr_unique_id = "audi_a4_tracker"
         self._attr_icon = "mdi:car"
@@ -38,8 +39,6 @@ class CarTracker(TrackerEntity):
     @property
     def extra_state_attributes(self):
         data = self.coordinator.data or {}
-        speed = float(data.get("speed", 0)) if data.get("speed") else 0.0
-        
         return {
-            "speed": speed,
+            "speed": float(data.get("speed", 0)),
         }
