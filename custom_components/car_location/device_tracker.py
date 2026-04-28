@@ -72,5 +72,6 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
         return {
             "speed": float(data.get("speed", 0)),
             "ignition": bool(engine),
+            "ignition_status": "Заведен" if engine else "Заглушен",
             "last_update": format_diff_time(diff_time),
         }
