@@ -10,6 +10,24 @@ _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=120)
 
 
+def _parse_bigdata(bigdata: str):
+    result = {}
+
+    if not bigdata:
+        return result
+
+    parts = bigdata.split(",")
+    for part in parts:
+        if ":" in part:
+            key_parts = part.split(":")
+            if len(key_parts) >= 3:
+                key = key_parts[0]
+                value = key_parts[-1]
+                result[key] = value
+
+    return result
+
+
 class CarDataCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, config):
         self.username = config["username"]
@@ -43,10 +61,21 @@ class CarDataCoordinator(DataUpdateCoordinator):
 
             d = data[0]
 
+            bigdata_raw = d.get("bigdata", "")
+            bigdata = _parse_bigdata(bigdata_raw)
+
+            acc = int(bigdata.get("ACC", 0))
+
+            # фильтр мусорной скорости при LBS
+            speed = float(d.get("speed", 0))
+            if d.get("gpslbs") != "A":
+                speed = 0
+
             return {
                 "lat": float(d["lat"]),
                 "lon": float(d["lng"]),
-                "speed": float(d.get("speed", 0)),
+                "speed": speed,
                 "timestamp": f'{d["d"]} {d["t"]}',
                 "diff_time": int(d.get("diff_time", 0)),
+                "acc": acc,
             }
