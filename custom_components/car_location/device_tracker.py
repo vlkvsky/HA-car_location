@@ -17,6 +17,10 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
         self._attr_icon = "mdi:car"
 
     @property
+    def should_poll(self):
+        return False
+
+    @property
     def source_type(self):
         return SourceType.GPS
 
@@ -39,6 +43,11 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
     @property
     def extra_state_attributes(self):
         data = self.coordinator.data or {}
+
+        acc = int(data.get("acc", 0))
+
         return {
             "speed": float(data.get("speed", 0)),
+            "acc": acc,
+            "ignition": bool(acc),
         }
