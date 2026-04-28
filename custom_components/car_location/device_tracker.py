@@ -3,6 +3,28 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 DOMAIN = "car_location"
 
+def format_diff_time(seconds: int) -> str:
+    if seconds is None:
+        return "unknown"
+
+    seconds = int(seconds)
+
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, seconds = divmod(rem, 60)
+
+    parts = []
+    if days:
+        parts.append(f"{days}d")
+    if hours:
+        parts.append(f"{hours}h")
+    if minutes:
+        parts.append(f"{minutes}m")
+    if seconds and not days:
+        parts.append(f"{seconds}s")
+
+    return " ".join(parts) if parts else "0s"
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -45,8 +67,11 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
         data = self.coordinator.data or {}
 
         engine = int(data.get("engine", 0))
+        diff_time = int(data.get("diff_time", 0))
 
         return {
             "speed": float(data.get("speed", 0)),
             "ignition": bool(engine),
+            "diff_time": data.get("diff_time"),
+            "last_seen": format_diff_time(diff_time),
         }
