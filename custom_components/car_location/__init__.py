@@ -19,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
     await hass.config_entries.async_forward_entry_setups(
-        entry, ["device_tracker", "number"]
+        entry, ["device_tracker", "number", "sensor", "binary_sensor"]
     )
 
     return True
@@ -27,5 +27,5 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return await hass.config_entries.async_unload_platforms(
-        entry, ["device_tracker", "number"]
+        entry, ["device_tracker", "number", "sensor", "binary_sensor"]
     )

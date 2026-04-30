@@ -67,12 +67,9 @@ class CarTracker(CoordinatorEntity, TrackerEntity):
     def extra_state_attributes(self):
         data = self.coordinator.data or {}
 
-        engine = int(data.get("engine", 0))
         diff_time = int(data.get("diff_time", 0))
 
         return {
             "speed": float(data.get("speed", 0)),
-            "ignition": bool(engine),
-            "ignition_status": "Заведен" if engine else "Заглушен",
             "last_update": format_diff_time(diff_time),
         }
