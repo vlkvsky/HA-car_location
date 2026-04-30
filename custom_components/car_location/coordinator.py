@@ -7,8 +7,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(seconds=60)
-
 
 def _parse_bigdata(bigdata: str):
     result = {}
@@ -29,16 +27,22 @@ def _parse_bigdata(bigdata: str):
 
 
 class CarDataCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, config):
+    def __init__(self, hass, config, options):
         self.username = config["username"]
         self.client_id = config["client_id"]
+
+        scan_interval = options.get(
+            "scan_interval",
+            config.get("scan_interval", 60)
+        )
+
         self.session = async_get_clientsession(hass)
 
         super().__init__(
             hass,
             _LOGGER,
             name="car_location",
-            update_interval=SCAN_INTERVAL,
+            update_interval=timedelta(seconds=scan_interval),
         )
 
     async def _async_update_data(self):
@@ -66,7 +70,6 @@ class CarDataCoordinator(DataUpdateCoordinator):
 
             engine = int(bigdata.get("engine", 0))
 
-            # фильтр мусорной скорости при LBS
             speed = float(d.get("speed", 0))
             if d.get("gpslbs") != "A":
                 speed = 0
