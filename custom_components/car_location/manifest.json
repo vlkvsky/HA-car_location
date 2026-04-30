@@ -1,7 +1,7 @@
 {
   "domain": "car_location",
   "name": "Car Location",
-  "version": "2.3",
+  "version": "3.0",
   "config_flow": true,
   "documentation": "https://github.com/vlkvsky/homeassistant/addons",
   "dependencies": [],
