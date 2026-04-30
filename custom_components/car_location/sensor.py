@@ -26,17 +26,3 @@ class CarSpeedSensor(CoordinatorEntity, SensorEntity):
     def native_value(self):
         data = self.coordinator.data or {}
         return data.get("speed", 0)
-
-
-class CarDiffTimeSensor(CoordinatorEntity, SensorEntity):
-    def __init__(self, coordinator):
-        super().__init__(coordinator)
-
-        self._attr_name = "Audi A4 Last Update"
-        self._attr_unique_id = "audi_a4_diff_time"
-        self._attr_icon = "mdi:clock"
-
-    @property
-    def native_value(self):
-        data = self.coordinator.data or {}
-        return data.get("diff_time", 0)
