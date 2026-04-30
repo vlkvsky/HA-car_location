@@ -1,9 +1,9 @@
 {
   "domain": "car_location",
   "name": "Car Location",
-  "version": "3.1",
+  "version": "3.3",
   "config_flow": true,
-  "documentation": "https://github.com/vlkvsky/homeassistant/addons",
+  "documentation": "https://github.com/vlkvsky/HA-car_location/blob/main/README.md",
   "dependencies": [],
   "codeowners": ["@vlkvsky"],
   "requirements": []
