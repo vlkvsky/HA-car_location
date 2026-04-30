@@ -1,7 +1,7 @@
 {
   "domain": "car_location",
-  "name": "Car Location",
-  "version": "3.3",
+  "name": "Audi Car Location",
+  "version": "3.4",
   "config_flow": true,
   "documentation": "https://github.com/vlkvsky/HA-car_location/blob/main/README.md",
   "dependencies": [],
