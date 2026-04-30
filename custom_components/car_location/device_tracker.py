@@ -3,6 +3,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 DOMAIN = "car_location"
 
+
 def format_diff_time(seconds: int) -> str:
     if seconds is None:
         return "unknown"

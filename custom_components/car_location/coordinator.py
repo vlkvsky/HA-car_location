@@ -27,14 +27,12 @@ def _parse_bigdata(bigdata: str):
 
 
 class CarDataCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, config, options):
-        self.username = config["username"]
-        self.client_id = config["client_id"]
+    def __init__(self, hass, entry):
+        self.hass = hass
+        self.entry = entry
 
-        scan_interval = options.get(
-            "scan_interval",
-            config.get("scan_interval", 60)
-        )
+        self.username = entry.data["username"]
+        self.client_id = entry.data["client_id"]
 
         self.session = async_get_clientsession(hass)
 
@@ -42,8 +40,24 @@ class CarDataCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="car_location",
-            update_interval=timedelta(seconds=scan_interval),
+            update_interval=timedelta(seconds=self._get_interval()),
         )
+
+    def _get_interval(self):
+        return self.entry.options.get(
+            "scan_interval",
+            self.entry.data.get("scan_interval", 60),
+        )
+
+    def get_current_interval(self):
+        return self._get_interval()
+
+    async def set_interval(self, value: int):
+        _LOGGER.debug(f"Set interval to {value}")
+
+        self.update_interval = timedelta(seconds=value)
+
+        await self.async_request_refresh()
 
     async def _async_update_data(self):
         url = (
