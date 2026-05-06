@@ -85,8 +85,8 @@ class CarDataCoordinator(DataUpdateCoordinator):
             engine = int(bigdata.get("engine", 0))
 
             speed = float(d.get("speed", 0))
-            if d.get("gpslbs") != "A":
-                speed = 0
+#            if d.get("gpslbs") != "A":
+#                speed = 0
 
             return {
                 "lat": float(d["lat"]),
