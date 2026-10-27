@@ -1,11 +1,16 @@
-import logging
+import asyncio
 import json
+import logging
 from datetime import timedelta
 
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+import aiohttp
+
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
+
+REQUEST_TIMEOUT = 20  # секунд
 
 
 def _parse_bigdata(bigdata: str):
@@ -65,25 +70,34 @@ class CarDataCoordinator(DataUpdateCoordinator):
             f"?username={self.username}&ctp=one&code={self.client_id}"
         )
 
-        async with self.session.get(url) as resp:
-            text = await resp.text()
+        # Мережа: таймаут і помилки з'єднання -> UpdateFailed
+        # (HA пише зрозуміле повідомлення в лог і повторює на наступному інтервалі)
+        try:
+            async with self.session.get(
+                url, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)
+            ) as resp:
+                if resp.status != 200:
+                    raise UpdateFailed(f"livegpstracks HTTP {resp.status}")
+                text = await resp.text()
+        except asyncio.TimeoutError as err:
+            raise UpdateFailed(f"livegpstracks timeout ({REQUEST_TIMEOUT}s)") from err
+        except aiohttp.ClientError as err:
+            raise UpdateFailed(f"livegpstracks connection error: {err}") from err
 
-            try:
-                data = json.loads(text)
-            except Exception:
-                _LOGGER.error(f"Bad response: {text[:200]}")
-                return None
+        # Відповідь: невалідний JSON або порожній список -> UpdateFailed
+        try:
+            data = json.loads(text)
+        except ValueError as err:
+            raise UpdateFailed(f"Bad response: {text[:200]}") from err
 
-            if not data:
-                return None
+        if not data:
+            raise UpdateFailed("Empty response from livegpstracks")
 
-            d = data[0]
+        d = data[0]
 
-            bigdata_raw = d.get("bigdata", "")
-            bigdata = _parse_bigdata(bigdata_raw)
-
+        try:
+            bigdata = _parse_bigdata(d.get("bigdata", ""))
             engine = int(bigdata.get("engine", 0))
-
             speed = float(d.get("speed", 0))
 #            if d.get("gpslbs") != "A":
 #                speed = 0
@@ -96,3 +110,5 @@ class CarDataCoordinator(DataUpdateCoordinator):
                 "diff_time": int(d.get("diff_time", 0)),
                 "engine": engine,
             }
+        except (KeyError, TypeError, ValueError) as err:
+            raise UpdateFailed(f"Unexpected data format: {err}; raw: {str(d)[:200]}") from err
